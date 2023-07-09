@@ -15,7 +15,7 @@
       integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
       crossorigin="anonymous"
     ></script>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="../style.css" />
   </head>
   <body>
     <nav class="navbar navbar-expand-lg">
@@ -25,17 +25,9 @@
     </nav>
     <main>
       <div class="container rounded signup-form shadow-sm">
-        <h2 class="heading">Sign Up</h2>
-        <p class="" id="message">test</p>
-        <form action="" method="POST" id="signUpForm">
-          <label for="username" class="form-label">UserName:</label>
-          <input
-            type="text"
-            name="userName"
-            id="username"
-            class="form-control"
-            autofocus="true"
-          />
+        <h2 class="heading">Login</h2>
+        <p class="" id="message"></p>
+        <form action="" method="POST" id="loginForm">
           <label for="email" class="form-label">Email:</label>
           <input type="email" name="email" id="email" class="form-control" />
           <label for="password" class="form-label">Password:</label>
@@ -45,12 +37,12 @@
             id="password"
             class="form-control"
           />
-          <input type="submit" value="Sign Up" class="btn btn-lg rounded" />
-          <p>Existing user? <a href="login.html" id="page">Login</a></p>
+          <input type="submit" value="Login" class="btn btn-lg rounded" />
+          <p>New user? <a href="../signup/signup.html" id="page">Sign up</a></p>
         </form>
       </div>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="signup.js"></script>
+    <script src="login.js"></script>
   </body>
 </html>
