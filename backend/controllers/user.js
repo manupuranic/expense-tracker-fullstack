@@ -35,7 +35,7 @@ exports.postLoginUser = async (req, res, next) => {
       });
     } else {
       if (user[0].password !== password) {
-        res.status(404).json({
+        res.status(401).json({
           message: "Password do not match",
           success: false,
         });

@@ -60,12 +60,11 @@ const loginHandler = async (e) => {
       const data = response.data;
       messageHandler(data.message, "success");
     } catch (err) {
-      const {
-        response: {
-          data: { message },
-        },
-      } = err;
-      messageHandler(message, "error");
+      if (err.response.status === 401) {
+        messageHandler("Password do not match. Try again", "error");
+      } else {
+        messageHandler("User does not exist!", "error");
+      }
     }
   }
 };
