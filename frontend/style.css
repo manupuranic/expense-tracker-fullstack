@@ -63,3 +63,12 @@ input {
 .success {
   background-color: #03a503;
 }
+
+#page {
+  text-decoration: none;
+  color: #05c185;
+}
+
+#page:hover {
+  color: #16d699;
+}

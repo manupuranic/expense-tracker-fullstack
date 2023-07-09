@@ -1,6 +1,7 @@
 const baseUrl = "http://localhost:3000";
 
-const form = document.getElementById("signUpForm");
+const signUpForm = document.getElementById("signUpForm");
+const loginForm = document.getElementById("loginForm");
 const msg = document.getElementById("message");
 
 const messageHandler = (message, type) => {
@@ -9,10 +10,10 @@ const messageHandler = (message, type) => {
   setTimeout(() => {
     msg.innerText = "";
     msg.className = "";
-  }, 3000);
+  }, 5000);
 };
 
-const submitHandler = async (e) => {
+const signUpHandler = async (e) => {
   e.preventDefault();
   const userName = e.target.userName;
   const email = e.target.email;
@@ -43,4 +44,31 @@ const submitHandler = async (e) => {
   }
 };
 
-form.addEventListener("submit", submitHandler);
+const loginHandler = async (e) => {
+  e.preventDefault();
+  const email = e.target.email;
+  const password = e.target.password;
+  if (email.value === "" || password.value === "") {
+    messageHandler("Please Enter all the fields", "error");
+  } else {
+    let userDetails = {
+      email: email.value,
+      password: password.value,
+    };
+    try {
+      const response = await axios.post(`${baseUrl}/user/login`, userDetails);
+      const data = response.data;
+      messageHandler(data.message, "success");
+    } catch (err) {
+      const {
+        response: {
+          data: { message },
+        },
+      } = err;
+      messageHandler(message, "error");
+    }
+  }
+};
+
+loginForm.addEventListener("submit", loginHandler);
+signUpForm.addEventListener("submit", signUpHandler);
