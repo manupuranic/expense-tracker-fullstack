@@ -27,10 +27,16 @@ const submitHandler = async (e) => {
     };
     try {
       const response = await axios.post(`${baseUrl}/user/sign-up`, userDetails);
-      messageHandler("Signup successfull", "success");
-      userName.value = "";
-      email.value = "";
-      password.value = "";
+      const user = response.data;
+      if (user.message) {
+        messageHandler(response.data.message, "error");
+      } else {
+        console.log(user);
+        messageHandler("Signup successfull", "success");
+        userName.value = "";
+        email.value = "";
+        password.value = "";
+      }
     } catch (err) {
       messageHandler(`Something Went wrong: ${err.message}`, "error");
     }
