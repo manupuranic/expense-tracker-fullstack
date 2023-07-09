@@ -1,7 +1,6 @@
 const baseUrl = "http://localhost:3000";
 
 const signUpForm = document.getElementById("signUpForm");
-const loginForm = document.getElementById("loginForm");
 const msg = document.getElementById("message");
 
 const messageHandler = (message, type) => {
@@ -13,11 +12,12 @@ const messageHandler = (message, type) => {
   }, 5000);
 };
 
-const signUpHandler = async (e) => {
-  e.preventDefault();
-  const userName = e.target.userName;
-  const email = e.target.email;
-  const password = e.target.password;
+const signUpHandler = async (event) => {
+  event.preventDefault();
+  console.log(event.target);
+  const userName = event.target.userName;
+  const email = event.target.email;
+  const password = event.target.password;
   if (userName.value === "" || email.value === "" || password.value === "") {
     messageHandler("Please Enter all the fields", "error");
   } else {
@@ -44,30 +44,4 @@ const signUpHandler = async (e) => {
   }
 };
 
-const loginHandler = async (e) => {
-  e.preventDefault();
-  const email = e.target.email;
-  const password = e.target.password;
-  if (email.value === "" || password.value === "") {
-    messageHandler("Please Enter all the fields", "error");
-  } else {
-    let userDetails = {
-      email: email.value,
-      password: password.value,
-    };
-    try {
-      const response = await axios.post(`${baseUrl}/user/login`, userDetails);
-      const data = response.data;
-      messageHandler(data.message, "success");
-    } catch (err) {
-      if (err.response.status === 401) {
-        messageHandler("Password do not match. Try again", "error");
-      } else {
-        messageHandler("User does not exist!", "error");
-      }
-    }
-  }
-};
-
-loginForm.addEventListener("submit", loginHandler);
 signUpForm.addEventListener("submit", signUpHandler);
