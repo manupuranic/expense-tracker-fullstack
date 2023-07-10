@@ -29,6 +29,7 @@ const loginHandler = async (e) => {
       messageHandler(data.message, "success");
       email.value = "";
       password.value = "";
+      window.location.href = "../expenses/expenses.html";
     } catch (err) {
       if (err.response.status === 401) {
         messageHandler("Password do not match. Try again", "error");

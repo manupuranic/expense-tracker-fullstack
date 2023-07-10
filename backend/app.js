@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 
 const sequelize = require("./utils/database");
 const userRouter = require("./routes/user");
+const expenseRouter = require("./routes/expenses");
 
 const app = express();
 
@@ -11,6 +12,7 @@ app.use(cors());
 app.use(bodyParser.json({ extended: true }));
 
 app.use("/user", userRouter);
+app.use("/expenses", expenseRouter);
 
 sequelize
   .sync()

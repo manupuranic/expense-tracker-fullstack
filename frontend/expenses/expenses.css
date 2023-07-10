@@ -1,0 +1,59 @@
+.container {
+  width: 80%;
+}
+
+.form-div {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
+select {
+  margin-top: 7%;
+}
+
+@media (max-width: 900px) {
+  .form-div {
+    display: block;
+  }
+  select {
+    margin-top: 2%;
+  }
+}
+
+.li-btn {
+  float: right;
+  margin-left: 5px;
+}
+
+.symbol {
+  color: green;
+  font-size: 1.5rem;
+}
+
+.span-amount {
+  color: green;
+  font-size: 1.5rem;
+}
+.span-desc {
+  color: #ab27fd;
+  display: block;
+}
+.span-category {
+  display: block;
+  font-style: italic;
+}
+
+.delete {
+  background-color: #f21313;
+}
+
+.edit {
+  color: #05c185;
+  background-color: white;
+  border-color: #05c185;
+}
+
+.delete:hover {
+  background-color: #d80404;
+}

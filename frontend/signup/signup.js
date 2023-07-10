@@ -34,6 +34,7 @@ const signUpHandler = async (event) => {
       } else {
         console.log(user);
         messageHandler("Signup successfull", "success");
+        window.location.href = "../expenses/expenses.html";
         userName.value = "";
         email.value = "";
         password.value = "";
