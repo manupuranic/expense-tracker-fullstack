@@ -22,6 +22,25 @@
     <nav class="navbar navbar-expand-lg">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">Expense Tracker</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <div class="nav-btn">
+            <button class="btn" id="premium-btn" type="submit">
+              Buy Premium
+            </button>
+            <button class="btn logout" id="logout">logout</button>
+          </div>
+        </div>
       </div>
     </nav>
     <main>
@@ -80,6 +99,7 @@
       </div>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="./expenses.js"></script>
   </body>
 </html>

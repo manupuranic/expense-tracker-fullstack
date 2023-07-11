@@ -21,6 +21,7 @@ exports.postSignUpUser = async (req, res, next) => {
           userName: userName,
           email: email,
           password: hash,
+          isPremium: false,
         });
         res.json(result.dataValues);
       });
@@ -61,4 +62,9 @@ exports.postLoginUser = async (req, res, next) => {
       message: err,
     });
   }
+};
+
+exports.getUser = async (req, res, next) => {
+  const user = req.user;
+  return res.json(req.user);
 };

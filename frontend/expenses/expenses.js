@@ -3,6 +3,65 @@ const baseUrl = "http://localhost:3000/expenses";
 const msg = document.getElementById("message");
 const form = document.getElementById("addExpense");
 const expenseList = document.getElementById("expenses");
+const premiumBtn = document.getElementById("premium-btn");
+const logout = document.getElementById("logout");
+
+const token = localStorage.getItem("token");
+if (!token) {
+  window.location.href = "../login/login.html";
+}
+
+logout.addEventListener("click", () => {
+  localStorage.removeItem("token");
+  window.location.href = "../login/login.html";
+});
+
+document.getElementById("premium-btn").addEventListener("click", async (e) => {
+  const token = localStorage.getItem("token");
+  const response = await axios.get(
+    "http://localhost:3000/purchase/premiummembership",
+    {
+      headers: {
+        Authentication: token,
+      },
+    }
+  );
+  var options = {
+    key: response.data.key_id,
+    order_id: response.data.order.id,
+    handler: async function (response) {
+      await axios.post(
+        "http://localhost:3000/purchase/updatetransactionstatus",
+        {
+          order_id: options.order_id,
+          payment_id: response.razorpay_payment_id,
+          success: true,
+        },
+        { headers: { Authentication: token } }
+      );
+      getExpenses();
+      alert("You are now a Premium User!");
+    },
+  };
+
+  const rzpy = new Razorpay(options);
+  rzpy.open();
+  e.preventDefault();
+
+  rzpy.on("payment.failed", async function (response) {
+    console.log(response);
+
+    await axios.post(
+      "http://localhost:3000/purchase/updatetransactionstatus",
+      {
+        order_id: options.order_id,
+        sucess: false,
+      },
+      { headers: { Authentication: token } }
+    );
+    alert("something went wrong!!");
+  });
+});
 
 const messageHandler = (message, type) => {
   msg.innerText = message;
@@ -53,9 +112,23 @@ const displayExpenses = (exp) => {
   expenseList.appendChild(li);
 };
 
+const displayPremiumButton = async () => {
+  try {
+    const response = await axios.get("http://localhost:3000/user", {
+      headers: { Authentication: token },
+    });
+    if (response.data.isPremium) {
+      premiumBtn.style.display = "none";
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 const getExpenses = async () => {
   expenseList.replaceChildren();
-  const token = localStorage.getItem("token");
+  displayPremiumButton();
+  // const token = localStorage.getItem("token");
   try {
     const res = await axios.get(baseUrl, {
       headers: { Authentication: token },

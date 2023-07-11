@@ -5,8 +5,10 @@ const bodyParser = require("body-parser");
 const sequelize = require("./utils/database");
 const userRouter = require("./routes/user");
 const expenseRouter = require("./routes/expenses");
+const purchaseRouter = require("./routes/purchase");
 const User = require("./models/user");
 const Expense = require("./models/expense");
+const Order = require("./models/order");
 
 const app = express();
 
@@ -15,9 +17,13 @@ app.use(bodyParser.json({ extended: true }));
 
 app.use("/user", userRouter);
 app.use("/expenses", expenseRouter);
+app.use("/purchase", purchaseRouter);
 
 User.hasMany(Expense);
 Expense.belongsTo(User);
+
+User.hasMany(Order);
+Order.belongsTo(User);
 
 sequelize
   .sync()
