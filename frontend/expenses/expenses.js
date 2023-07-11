@@ -55,8 +55,11 @@ const displayExpenses = (exp) => {
 
 const getExpenses = async () => {
   expenseList.replaceChildren();
+  const token = localStorage.getItem("token");
   try {
-    const res = await axios.get(baseUrl);
+    const res = await axios.get(baseUrl, {
+      headers: { Authentication: token },
+    });
     const expenses = res.data;
     expenses.forEach((exp) => {
       displayExpenses(exp);
@@ -70,6 +73,7 @@ document.addEventListener("DOMContentLoaded", getExpenses);
 
 const submitHandler = async (e) => {
   e.preventDefault();
+  const token = localStorage.getItem("token");
   let amount = document.getElementById("amount");
   let desc = document.getElementById("desc");
   let category = document.getElementById("category");
@@ -86,7 +90,8 @@ const submitHandler = async (e) => {
     try {
       const res = await axios.post(
         `${baseUrl}/edit-expense/${editId}`,
-        expList
+        expList,
+        { headers: { Authentication: token } }
       );
       getExpenses();
       document.querySelector(".submit-btn").id = "";
@@ -95,7 +100,9 @@ const submitHandler = async (e) => {
     }
   } else {
     try {
-      const exp = await axios.post(`${baseUrl}/add-expense`, expList);
+      const exp = await axios.post(`${baseUrl}/add-expense`, expList, {
+        headers: { Authentication: token },
+      });
       displayExpenses(exp.data);
       messageHandler("Expense Added Successfully", "success");
     } catch (err) {
@@ -111,15 +118,16 @@ const submitHandler = async (e) => {
 const deleteHandler = async (e) => {
   const li = e.target.parentElement;
   const id = li.id;
-  console.log(id);
+  const token = localStorage.getItem("token");
   try {
-    const res = await axios.delete(`${baseUrl}/delete-expense/${id}`);
+    const res = await axios.delete(`${baseUrl}/delete-expense/${id}`, {
+      headers: { Authentication: token },
+    });
     expenseList.removeChild(li);
     messageHandler("Expense Deleted", "success");
   } catch (err) {
     messageHandler(err, "error");
   }
-  // localStorage.removeItem(desc);
 };
 
 const editHandler = (e) => {

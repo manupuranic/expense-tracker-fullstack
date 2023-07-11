@@ -27,9 +27,10 @@ const loginHandler = async (e) => {
       const response = await axios.post(`${baseUrl}/user/login`, userDetails);
       const data = response.data;
       messageHandler(data.message, "success");
+      localStorage.setItem("token", data.token);
+      window.location.href = "../expenses/expenses.html";
       email.value = "";
       password.value = "";
-      window.location.href = "../expenses/expenses.html";
     } catch (err) {
       if (err.response.status === 401) {
         messageHandler("Password do not match. Try again", "error");
