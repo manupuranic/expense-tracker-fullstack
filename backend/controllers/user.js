@@ -2,8 +2,8 @@ const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const generateWebToken = (id) => {
-  return jwt.sign({ userId: id }, "secretKey");
+const generateWebToken = (id, isPremium) => {
+  return jwt.sign({ userId: id, isPremium: isPremium }, "secretKey");
 };
 
 exports.postSignUpUser = async (req, res, next) => {
@@ -47,7 +47,7 @@ exports.postLoginUser = async (req, res, next) => {
         res.json({
           message: "User logged in Successfully",
           success: true,
-          token: generateWebToken(user[0].id),
+          token: generateWebToken(user[0].id, user[0].isPremium),
         });
       } else {
         res.status(401).json({

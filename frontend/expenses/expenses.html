@@ -38,6 +38,8 @@
             <button class="btn" id="premium-btn" type="submit">
               Buy Premium
             </button>
+            <p id="premium-info">You are a premium user</p>
+            <button class="btn" id="showLeaderboard">Show Leaderboard</button>
             <button class="btn logout" id="logout">logout</button>
           </div>
         </div>
@@ -96,6 +98,10 @@
           <button class="btn btn-dark li-btn edit">Edit</button>
         </li> -->
         </ul>
+      </div>
+      <div class="container leaderboard rounded shadow">
+        <h3 class="heading">Leaderboard</h3>
+        <ul id="leaderboard-list" class="list-group"></ul>
       </div>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>

@@ -1,5 +1,10 @@
 const Razorpay = require("razorpay");
 const Order = require("../models/order");
+const jwt = require("jsonwebtoken");
+
+const generateWebToken = (id, isPremium) => {
+  return jwt.sign({ userId: id, isPremium: isPremium }, "secretKey");
+};
 
 exports.purchasePremium = async (req, res, next) => {
   try {
@@ -51,9 +56,11 @@ exports.updateOrderStatus = async (req, res, next) => {
       // const order = await Order.findOne({ where: { orderId: order_id } });
       // await req.user.update({ isPremium: true });
       await order.update({ paymentId: payment_id, status: "SUCCESSFUL" });
+      const token = generateWebToken(req.user.id, req.user.isPremium);
       return res.status(202).json({
         success: true,
         message: "Transaction Successful",
+        token: token,
       });
     } else {
       const order = await Order.findOne({ where: { orderId: order_id } });

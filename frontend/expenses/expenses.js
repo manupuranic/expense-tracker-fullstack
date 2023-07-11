@@ -4,9 +4,14 @@ const msg = document.getElementById("message");
 const form = document.getElementById("addExpense");
 const expenseList = document.getElementById("expenses");
 const premiumBtn = document.getElementById("premium-btn");
+const premiumInfo = document.getElementById("premium-info");
 const logout = document.getElementById("logout");
+const leaderboardList = document.getElementById("leaderboard-list");
+const showLeaderboardBtn = document.getElementById("showLeaderboard");
+const leaderboardDiv = document.querySelector(".leaderboard");
 
 const token = localStorage.getItem("token");
+
 if (!token) {
   window.location.href = "../login/login.html";
 }
@@ -30,7 +35,7 @@ document.getElementById("premium-btn").addEventListener("click", async (e) => {
     key: response.data.key_id,
     order_id: response.data.order.id,
     handler: async function (response) {
-      await axios.post(
+      const result = await axios.post(
         "http://localhost:3000/purchase/updatetransactionstatus",
         {
           order_id: options.order_id,
@@ -39,6 +44,8 @@ document.getElementById("premium-btn").addEventListener("click", async (e) => {
         },
         { headers: { Authentication: token } }
       );
+      const newToken = result.data.token;
+      localStorage.setItem("token", newToken);
       getExpenses();
       alert("You are now a Premium User!");
     },
@@ -71,6 +78,54 @@ const messageHandler = (message, type) => {
     msg.className = "";
   }, 5000);
 };
+
+const displayLeaderboard = (user) => {
+  const li = document.createElement("li");
+  const spanUserName = document.createElement("span");
+  const spanTotalExpense = document.createElement("span");
+  const symbol = document.createElement("span");
+  const amountDiv = document.createElement("div");
+
+  li.className = "list-group-item leaderboard-li";
+  spanUserName.className = "span-UserName";
+  spanTotalExpense.className = "span-TotalExpense";
+  symbol.className = "symbol";
+  amountDiv.className = "amount-div";
+
+  spanUserName.appendChild(document.createTextNode(user.name));
+  if (user.totalExpense) {
+    spanTotalExpense.appendChild(document.createTextNode(user.totalExpense));
+  } else {
+    spanTotalExpense.appendChild(document.createTextNode(0));
+  }
+
+  symbol.appendChild(document.createTextNode("₹"));
+
+  li.appendChild(spanUserName);
+  amountDiv.appendChild(symbol);
+  amountDiv.appendChild(spanTotalExpense);
+  li.appendChild(amountDiv);
+
+  leaderboardList.appendChild(li);
+};
+
+const getLeaderboard = async (e) => {
+  leaderboardList.replaceChildren();
+  try {
+    const response = await axios.get(
+      "http://localhost:3000/premium/showLeaderboards"
+    );
+    leaderboardDiv.style.display = "block";
+    const leaderboard = response.data;
+    leaderboard.forEach((user) => {
+      displayLeaderboard(user);
+    });
+    window.location.href = "#leaderboard-list";
+  } catch (err) {
+    console.log(err);
+  }
+};
+showLeaderboardBtn.addEventListener("click", getLeaderboard);
 
 const displayExpenses = (exp) => {
   const li = document.createElement("li");
@@ -112,22 +167,35 @@ const displayExpenses = (exp) => {
   expenseList.appendChild(li);
 };
 
-const displayPremiumButton = async () => {
-  try {
-    const response = await axios.get("http://localhost:3000/user", {
-      headers: { Authentication: token },
-    });
-    if (response.data.isPremium) {
-      premiumBtn.style.display = "none";
-    }
-  } catch (err) {
-    console.log(err);
+function parseJwt(token) {
+  var base64Url = token.split(".")[1];
+  var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+  var jsonPayload = decodeURIComponent(
+    window
+      .atob(base64)
+      .split("")
+      .map(function (c) {
+        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+      })
+      .join("")
+  );
+
+  return JSON.parse(jsonPayload);
+}
+
+const premiumFeatures = async () => {
+  const token = localStorage.getItem("token");
+  const decoded = parseJwt(token);
+  if (decoded.isPremium) {
+    premiumBtn.style.display = "none";
+    premiumInfo.style.display = "inline";
+    showLeaderboardBtn.style.display = "inline";
   }
 };
 
 const getExpenses = async () => {
   expenseList.replaceChildren();
-  displayPremiumButton();
+  premiumFeatures();
   // const token = localStorage.getItem("token");
   try {
     const res = await axios.get(baseUrl, {
