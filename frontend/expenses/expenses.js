@@ -81,6 +81,7 @@ const messageHandler = (message, type) => {
 
 const displayLeaderboard = (user) => {
   const li = document.createElement("li");
+  const spanIndex = document.createElement("span");
   const spanUserName = document.createElement("span");
   const spanTotalExpense = document.createElement("span");
   const symbol = document.createElement("span");
@@ -91,6 +92,7 @@ const displayLeaderboard = (user) => {
   spanTotalExpense.className = "span-TotalExpense";
   symbol.className = "symbol";
   amountDiv.className = "amount-div";
+  spanIndex.className = "serial-index";
 
   spanUserName.appendChild(document.createTextNode(user.name));
   if (user.totalExpense) {
@@ -98,9 +100,10 @@ const displayLeaderboard = (user) => {
   } else {
     spanTotalExpense.appendChild(document.createTextNode(0));
   }
-
+  spanIndex.appendChild(document.createTextNode(user.index));
   symbol.appendChild(document.createTextNode("₹"));
 
+  li.appendChild(spanIndex);
   li.appendChild(spanUserName);
   amountDiv.appendChild(symbol);
   amountDiv.appendChild(spanTotalExpense);
@@ -117,8 +120,8 @@ const getLeaderboard = async (e) => {
     );
     leaderboardDiv.style.display = "block";
     const leaderboard = response.data;
-    leaderboard.forEach((user) => {
-      displayLeaderboard(user);
+    leaderboard.forEach((user, index) => {
+      displayLeaderboard({ ...user, index: index + 1 });
     });
     window.location.href = "#leaderboard-list";
   } catch (err) {

@@ -3,11 +3,17 @@
   padding: 0;
 }
 
+body {
+  font-family: "Poppins", sans-serif;
+}
+
 .navbar {
   background-color: #05c185;
 }
 .navbar a {
   color: #ffffff;
+  font-style: italic;
+  font-weight: 600;
 }
 
 .navbar a:hover {
