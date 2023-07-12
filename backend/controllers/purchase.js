@@ -1,6 +1,7 @@
 const Razorpay = require("razorpay");
 const Order = require("../models/order");
 const jwt = require("jsonwebtoken");
+const sequelize = require("../utils/database");
 
 const generateWebToken = (id, isPremium) => {
   return jwt.sign({ userId: id, isPremium: isPremium }, "secretKey");
@@ -46,16 +47,21 @@ exports.purchasePremium = async (req, res, next) => {
 };
 
 exports.updateOrderStatus = async (req, res, next) => {
+  const t = await sequelize.transaction();
   try {
     const { payment_id, order_id, success } = req.body;
     if (success) {
       const [order] = await Promise.all([
-        Order.findOne({ where: { orderId: order_id } }),
-        req.user.update({ isPremium: true }),
+        Order.findOne({ where: { orderId: order_id } }, { transaction: t }),
+        req.user.update({ isPremium: true }, { transaction: t }),
       ]);
       // const order = await Order.findOne({ where: { orderId: order_id } });
       // await req.user.update({ isPremium: true });
-      await order.update({ paymentId: payment_id, status: "SUCCESSFUL" });
+      await order.update(
+        { paymentId: payment_id, status: "SUCCESSFUL" },
+        { transaction: t }
+      );
+      await t.commit();
       const token = generateWebToken(req.user.id, req.user.isPremium);
       return res.status(202).json({
         success: true,
@@ -63,14 +69,19 @@ exports.updateOrderStatus = async (req, res, next) => {
         token: token,
       });
     } else {
-      const order = await Order.findOne({ where: { orderId: order_id } });
-      await order.update({ status: "FAILED" });
+      const order = await Order.findOne(
+        { where: { orderId: order_id } },
+        { transaction: t }
+      );
+      await order.update({ status: "FAILED" }, { transaction: t });
+      await t.commit();
       return res.status(404).json({
         success: false,
         message: "Transaction Failed",
       });
     }
   } catch (err) {
+    await t.rollback();
     console.log(err);
     res.status(404).json({
       success: false,

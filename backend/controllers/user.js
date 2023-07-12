@@ -1,15 +1,20 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const sequelize = require("../utils/database");
 
 const generateWebToken = (id, isPremium) => {
   return jwt.sign({ userId: id, isPremium: isPremium }, "secretKey");
 };
 
 exports.postSignUpUser = async (req, res, next) => {
+  const t = await sequelize.transaction();
   const { userName, email, password } = req.body;
   try {
-    const user = await User.findAll({ where: { email: email } });
+    const user = await User.findAll(
+      { where: { email: email } },
+      { transaction: t }
+    );
     if (user.length !== 0) {
       res.json({
         message: "User already exists!",
@@ -17,17 +22,22 @@ exports.postSignUpUser = async (req, res, next) => {
     } else {
       bcrypt.hash(password, 10, async (err, hash) => {
         console.log(err);
-        const result = await User.create({
-          userName: userName,
-          email: email,
-          password: hash,
-          isPremium: false,
-          totalExpense: 0,
-        });
+        const result = await User.create(
+          {
+            userName: userName,
+            email: email,
+            password: hash,
+            isPremium: false,
+            totalExpense: 0,
+          },
+          { transaction: t }
+        );
+        await t.commit();
         res.json(result.dataValues);
       });
     }
   } catch (err) {
+    await t.rollback();
     console.log(err);
   }
 };
