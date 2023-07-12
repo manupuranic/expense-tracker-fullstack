@@ -68,10 +68,10 @@ exports.getResetPassword = async (req, res, next) => {
                         }
                     </script>
 
-                    <form action="/password/resetpassword/${requestId}" method="POST">
-                        <label for="newpassword">Enter New password</label>
+                    <form action="/password/updatepassword/${requestId}" method="GET">
+                        <label for="newpassword">Enter New password:</label>
                         <input name="newpassword" type="password" required></input>
-                        <button type='submit'>reset password</button>
+                        <button>Reset password</button>
                     </form>
                 </html>`;
   const inactive = `<html>
@@ -104,9 +104,11 @@ exports.getResetPassword = async (req, res, next) => {
   }
 };
 
-exports.postResetPassword = async (req, res, next) => {
+exports.updatePassword = async (req, res, next) => {
   const receiptId = req.params.id;
-  const { password } = req.body;
+  console.log(req.query);
+  const { newpassword } = req.query;
+  console.log(newpassword);
   const t = await sequelize.transaction();
   const success = `<html>
                       <p>Password Updated</p>
@@ -115,7 +117,8 @@ exports.postResetPassword = async (req, res, next) => {
     const receipt = await ForgotPasswordRequests.findByPk(receiptId, {
       transaction: t,
     });
-    bcrypt.hash(password, 10, async (err, hash) => {
+    bcrypt.hash(newpassword, 10, async (err, hash) => {
+      console.log(hash);
       await User.update(
         {
           password: hash,
