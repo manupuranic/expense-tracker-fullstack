@@ -1,4 +1,5 @@
 const Expense = require("../models/expense");
+const User = require("../models/user");
 
 exports.addExpense = async (req, res, next) => {
   const { amount, desc, category } = req.body;
@@ -7,6 +8,9 @@ exports.addExpense = async (req, res, next) => {
       amount: amount,
       desc: desc,
       category: category,
+    });
+    const User = await req.user.update({
+      totalExpense: req.user.totalExpense + +amount,
     });
     res.json(expense.dataValues);
   } catch (err) {

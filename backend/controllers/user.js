@@ -22,6 +22,7 @@ exports.postSignUpUser = async (req, res, next) => {
           email: email,
           password: hash,
           isPremium: false,
+          totalExpense: 0,
         });
         res.json(result.dataValues);
       });
