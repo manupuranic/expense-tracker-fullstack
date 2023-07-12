@@ -1,0 +1,36 @@
+.table-container {
+  width: 80% !important;
+  height: 60% !important;
+  overflow-x: scroll;
+  overflow-y: scroll;
+}
+
+.table {
+  text-align: center;
+}
+
+.heading {
+  margin-top: 2%;
+}
+
+.gross-income {
+  color: green !important;
+}
+
+.gross-expense {
+  color: orangered !important;
+}
+
+.gross-savings {
+  color: blueviolet !important;
+}
+
+.download-icon {
+  font-size: 2rem;
+}
+
+.download {
+  position: fixed;
+  bottom: 2%;
+  right: 4%;
+}
