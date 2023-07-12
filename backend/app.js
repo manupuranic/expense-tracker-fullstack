@@ -12,6 +12,7 @@ const User = require("./models/user");
 const Expense = require("./models/expense");
 const Order = require("./models/order");
 const ForgotPasswordRequests = require("./models/forgotPasswordRequests");
+const FileDownloads = require("./models/fileDownloads");
 
 const app = express();
 
@@ -32,6 +33,9 @@ Order.belongsTo(User);
 
 User.hasMany(ForgotPasswordRequests);
 ForgotPasswordRequests.belongsTo(User);
+
+User.hasMany(FileDownloads);
+FileDownloads.belongsTo(User);
 
 sequelize
   .sync()

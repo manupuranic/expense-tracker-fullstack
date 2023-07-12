@@ -2,6 +2,7 @@ const Razorpay = require("razorpay");
 const Order = require("../models/order");
 const jwt = require("jsonwebtoken");
 const sequelize = require("../utils/database");
+require("dotenv").config();
 
 const generateWebToken = (id, isPremium) => {
   return jwt.sign({ userId: id, isPremium: isPremium }, "secretKey");
@@ -10,8 +11,8 @@ const generateWebToken = (id, isPremium) => {
 exports.purchasePremium = async (req, res, next) => {
   try {
     var rzp = new Razorpay({
-      key_id: "rzp_test_cpzxN1rwK7mEIy",
-      key_secret: "1iY56NglIoyneMe7wdfykRJw",
+      key_id: process.env.KEY_ID,
+      key_secret: process.env.KEY_SECRET,
     });
     const amount = 2500;
 

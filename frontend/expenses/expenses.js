@@ -9,6 +9,10 @@ const logout = document.getElementById("logout");
 const leaderboardList = document.getElementById("leaderboard-list");
 const showLeaderboardBtn = document.getElementById("showLeaderboard");
 const leaderboardDiv = document.querySelector(".leaderboard");
+const downloadBtn = document.getElementById("download-btn");
+const downloadDiv = document.querySelector(".download");
+const fileDownloadBody = document.getElementById("file-download-body");
+const fileDownloadDiv = document.getElementById("fileDownloads");
 
 const token = localStorage.getItem("token");
 
@@ -193,6 +197,8 @@ const premiumFeatures = async () => {
     premiumBtn.style.display = "none";
     premiumInfo.style.display = "inline";
     showLeaderboardBtn.style.display = "inline";
+    downloadDiv.style.display = "block";
+    downloadBtn.classList.remove("disabled");
   }
 };
 
@@ -205,9 +211,13 @@ const getExpenses = async () => {
       headers: { Authentication: token },
     });
     const expenses = res.data;
-    expenses.forEach((exp) => {
-      displayExpenses(exp);
-    });
+    if (expenses.length === 0) {
+      expenseList.parentElement.innerHTML += `<p style='text-align: center'>No expenses found! Add expenses above.</p>`;
+    } else {
+      expenses.forEach((exp) => {
+        displayExpenses(exp);
+      });
+    }
   } catch (err) {
     console.log(err);
   }
@@ -286,4 +296,40 @@ const editHandler = (e) => {
   document.getElementById("category").value = category;
 };
 
+const downloadManager = async (e) => {
+  try {
+    const result = await axios.get("http://localhost:3000/expenses/download", {
+      headers: { Authentication: token },
+    });
+    if (result.status === 201) {
+      const a = document.createElement("a");
+      a.href = result.data.fileUrl;
+      a.click();
+      response = await axios.get(
+        "http://localhost:3000/expenses/filedownloads",
+        { headers: { Authentication: token } }
+      );
+      const files = JSON.parse(response.data.files);
+      fileDownloadDiv.style.display = "block";
+      files.forEach((file) => displayFiles(file));
+
+      messageHandler("File Downloaded Successfully", "success");
+    } else {
+      throw new Error(result.data.message);
+    }
+  } catch (err) {
+    console.log(err);
+    messageHandler(err.response.statusText, "error");
+  }
+};
+
+const displayFiles = (file) => {
+  const date = file.createdAt.split("T")[0];
+  const tr = document.createElement("tr");
+  tr.innerHTML += `<td>${date}</td>
+                    <td><a href=${file.fileUrl}>${file.fileUrl}</a></td>`;
+  fileDownloadBody.appendChild(tr);
+};
+
+downloadBtn.addEventListener("click", downloadManager);
 form.addEventListener("submit", submitHandler);

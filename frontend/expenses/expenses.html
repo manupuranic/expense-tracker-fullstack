@@ -16,6 +16,10 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;0,400;0,500;0,600;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
@@ -52,6 +56,16 @@
       </div>
     </nav>
     <main>
+      <div class="download">
+        <button
+          class="btn rounded-circle btn-success disabled"
+          id="download-btn"
+        >
+          <span class="material-symbols-outlined download-icon">
+            download
+          </span>
+        </button>
+      </div>
       <div class="container rounded signup-form shadow-sm">
         <h2 class="heading">Add Expense</h2>
         <p class="" id="message"></p>
@@ -94,20 +108,26 @@
         </form>
       </div>
       <div class="container rounded expense-container shadow-sm">
-        <ul id="expenses" class="list-group">
-          <!-- <li class="list-group-item">
-          <span class="symbol">₹</span>
-          <span class="span-amount">10</span>
-          <span class="span-desc">Spiderman</span>
-          <span class="span-category">Movie</span>
-          <button class="btn btn-danger li-btn delete">Delete</button>
-          <button class="btn btn-dark li-btn edit">Edit</button>
-        </li> -->
-        </ul>
+        <ul id="expenses" class="list-group"></ul>
       </div>
       <div class="container leaderboard rounded shadow">
         <h3 class="heading">Leaderboard</h3>
         <ul id="leaderboard-list" class="list-group"></ul>
+      </div>
+      <div class="container download-files rounded shadow" id="fileDownloads">
+        <h3 class="heading">Files To download</h3>
+        <div class="table-container">
+          <table
+            class="table table-responsive table-bordered"
+            id="file-download-list"
+          >
+            <thead>
+              <th scope="col">Date</th>
+              <th scope="col">File</th>
+            </thead>
+            <tbody id="file-download-body"></tbody>
+          </table>
+        </div>
       </div>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
