@@ -30,7 +30,8 @@ const submitHandler = async (e) => {
       //   window.location.href = "../expenses/expenses.html";
       email.value = "";
     } catch (err) {
-      messageHandler(err, "error");
+      console.log(err);
+      messageHandler(err.response.data.message, "error");
     }
   }
 };
