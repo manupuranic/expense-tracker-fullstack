@@ -94,7 +94,7 @@ const displayLeaderboard = (user) => {
   amountDiv.className = "amount-div";
   spanIndex.className = "serial-index";
 
-  spanUserName.appendChild(document.createTextNode(user.name));
+  spanUserName.appendChild(document.createTextNode(user.userName));
   if (user.totalExpense) {
     spanTotalExpense.appendChild(document.createTextNode(user.totalExpense));
   } else {

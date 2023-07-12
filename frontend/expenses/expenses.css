@@ -122,4 +122,9 @@ select {
   .logout {
     display: block;
   }
+
+  .leaderboard {
+    display: none;
+    width: 80%;
+  }
 }
