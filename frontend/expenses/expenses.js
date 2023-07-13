@@ -14,8 +14,10 @@ const downloadDiv = document.querySelector(".download");
 const fileDownloadBody = document.getElementById("file-download-body");
 const fileDownloadDiv = document.getElementById("fileDownloads");
 const paginationDiv = document.getElementById("pagination");
+const selectPerPage = document.getElementById("perPage");
 
 const token = localStorage.getItem("token");
+const perPage = localStorage.getItem("perPage");
 
 if (!token) {
   window.location.href = "../login/login.html";
@@ -23,6 +25,7 @@ if (!token) {
 
 logout.addEventListener("click", () => {
   localStorage.removeItem("token");
+  localStorage.removeItem("perPage");
   window.location.href = "../login/login.html";
 });
 
@@ -239,10 +242,10 @@ const showPagination = (pageData) => {
 const getExpenses = async (page) => {
   expenseList.replaceChildren();
   premiumFeatures();
-  // const token = localStorage.getItem("token");
-  console.log(page);
+  const token = localStorage.getItem("token");
+  const perPage = localStorage.getItem("perPage");
   try {
-    const res = await axios.get(`${baseUrl}/${page}`, {
+    const res = await axios.get(`${baseUrl}/${page}?perPage=${perPage}`, {
       headers: { Authentication: token },
     });
     const {
@@ -275,6 +278,7 @@ const getExpenses = async (page) => {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
+  selectPerPage.value = perPage;
   getExpenses(1);
 });
 
@@ -291,7 +295,6 @@ const submitHandler = async (e) => {
     category: category.value,
   };
   console.log(expList);
-  // localStorage.setItem(desc.value, JSON.stringify(expList));
   try {
     const exp = await axios.post(`${baseUrl}/add-expense`, expList, {
       headers: { Authentication: token },
@@ -358,5 +361,9 @@ const displayFiles = (file) => {
   window.location.href = "#fileDownloads";
 };
 
+selectPerPage.addEventListener("change", () => {
+  localStorage.setItem("perPage", selectPerPage.value);
+  getExpenses(1);
+});
 downloadBtn.addEventListener("click", downloadManager);
 form.addEventListener("submit", submitHandler);

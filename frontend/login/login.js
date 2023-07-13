@@ -28,6 +28,7 @@ const loginHandler = async (e) => {
       const data = response.data;
       messageHandler(data.message, "success");
       localStorage.setItem("token", data.token);
+      localStorage.setItem("perPage", 5);
       window.location.href = "../expenses/expenses.html";
       email.value = "";
       password.value = "";

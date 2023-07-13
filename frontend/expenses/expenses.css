@@ -134,13 +134,21 @@ select {
 }
 
 #pagination {
-  text-align: center;
-  margin: 2%;
+  margin: 2px;
 }
 
 #pagination button {
-  margin: 2%;
+  margin: 10px;
   background-color: #05c185;
+}
+
+.page-settings {
+  margin: 10px;
+  text-align: center;
+}
+
+#perPage {
+  margin-top: 2px;
 }
 
 @media (max-width: 900px) {
@@ -148,7 +156,10 @@ select {
     display: block;
   }
   select {
-    margin-top: 2%;
+    margin-top: 2px;
+  }
+  .delete {
+    width: 40%;
   }
 
   .logout {

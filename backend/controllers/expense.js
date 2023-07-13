@@ -39,7 +39,7 @@ exports.addExpense = async (req, res, next) => {
 exports.getExpenses = async (req, res, next) => {
   let page = req.params.id;
   page = +page;
-  const ITEMS_PER_PAGE = 2;
+  const ITEMS_PER_PAGE = +req.query.perPage;
   try {
     // const expenses = await Expense.findAll({ where: { userId: req.user.id } });
     const data = await req.user.getExpenses({
