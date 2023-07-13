@@ -37,10 +37,30 @@ exports.addExpense = async (req, res, next) => {
 };
 
 exports.getExpenses = async (req, res, next) => {
+  let page = req.params.id;
+  page = +page;
+  const ITEMS_PER_PAGE = 2;
   try {
     // const expenses = await Expense.findAll({ where: { userId: req.user.id } });
-    const expenses = await req.user.getExpenses();
-    res.json(expenses);
+    const data = await req.user.getExpenses({
+      attributes: [[sequelize.fn("COUNT", sequelize.col("id")), "itemCount"]],
+    });
+    const totalItems = data[0].dataValues.itemCount;
+    const lastPage = Math.ceil(totalItems / ITEMS_PER_PAGE);
+    console.log(lastPage);
+    const expenses = await req.user.getExpenses({
+      offset: (page - 1) * ITEMS_PER_PAGE,
+      limit: ITEMS_PER_PAGE,
+    });
+    res.json({
+      expenses: expenses,
+      currentPage: page,
+      isNextPage: page !== lastPage,
+      isPreviousPage: page !== 1,
+      previousPage: page - 1,
+      nextPage: page + 1,
+      lastPage: lastPage,
+    });
   } catch (err) {
     console.log(err);
     res.status(500).json({

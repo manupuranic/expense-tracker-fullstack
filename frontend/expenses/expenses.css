@@ -133,6 +133,16 @@ select {
   overflow-x: scroll;
 }
 
+#pagination {
+  text-align: center;
+  margin: 2%;
+}
+
+#pagination button {
+  margin: 2%;
+  background-color: #05c185;
+}
+
 @media (max-width: 900px) {
   .form-div {
     display: block;
@@ -148,5 +158,9 @@ select {
   .leaderboard {
     display: none;
     width: 80%;
+  }
+
+  #pagination button {
+    width: 20%;
   }
 }

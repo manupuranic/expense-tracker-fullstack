@@ -29,6 +29,10 @@ router.get(
   expenseController.getFileDownloads
 );
 
-router.get("/", userAuthentication.authenticate, expenseController.getExpenses);
+router.get(
+  "/:id",
+  userAuthentication.authenticate,
+  expenseController.getExpenses
+);
 
 module.exports = router;

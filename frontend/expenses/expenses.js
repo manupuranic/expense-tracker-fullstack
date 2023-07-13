@@ -13,6 +13,7 @@ const downloadBtn = document.getElementById("download-btn");
 const downloadDiv = document.querySelector(".download");
 const fileDownloadBody = document.getElementById("file-download-body");
 const fileDownloadDiv = document.getElementById("fileDownloads");
+const paginationDiv = document.getElementById("pagination");
 
 const token = localStorage.getItem("token");
 
@@ -50,7 +51,7 @@ document.getElementById("premium-btn").addEventListener("click", async (e) => {
       );
       const newToken = result.data.token;
       localStorage.setItem("token", newToken);
-      getExpenses();
+      getExpenses(1);
       alert("You are now a Premium User!");
     },
   };
@@ -137,7 +138,6 @@ showLeaderboardBtn.addEventListener("click", getLeaderboard);
 const displayExpenses = (exp) => {
   const li = document.createElement("li");
   const delBtn = document.createElement("button");
-  const editBtn = document.createElement("button");
 
   const spanAmount = document.createElement("span");
   const spanDesc = document.createElement("span");
@@ -147,7 +147,6 @@ const displayExpenses = (exp) => {
   li.className = "list-group-item";
   li.id = exp.id;
   delBtn.className = "btn btn-danger li-btn delete";
-  editBtn.className = "btn btn-dark li-btn edit";
   spanAmount.className = "span-amount";
   spanCategory.className = "span-category";
   spanDesc.className = "span-desc";
@@ -159,17 +158,14 @@ const displayExpenses = (exp) => {
   symbol.appendChild(document.createTextNode("₹"));
 
   delBtn.appendChild(document.createTextNode("Delete"));
-  editBtn.appendChild(document.createTextNode("Edit"));
 
   delBtn.addEventListener("click", deleteHandler);
-  editBtn.addEventListener("click", editHandler);
 
   li.appendChild(symbol);
   li.appendChild(spanAmount);
   li.appendChild(spanDesc);
   li.appendChild(spanCategory);
   li.appendChild(delBtn);
-  li.appendChild(editBtn);
 
   expenseList.appendChild(li);
 };
@@ -202,20 +198,75 @@ const premiumFeatures = async () => {
   }
 };
 
-const getExpenses = async () => {
+const showPagination = (pageData) => {
+  paginationDiv.replaceChildren();
+  const {
+    currentPage,
+    isNextPage,
+    isPreviousPage,
+    previousPage,
+    nextPage,
+    lastPage,
+  } = pageData;
+
+  const prevBtn = document.createElement("button");
+  prevBtn.appendChild(document.createTextNode("Prev"));
+  if (isPreviousPage) {
+    prevBtn.className = "btn btn-sm";
+  } else {
+    prevBtn.className = "btn btn-sm disabled";
+  }
+  prevBtn.addEventListener("click", () => getExpenses(previousPage));
+  paginationDiv.appendChild(prevBtn);
+
+  const currentPageSpan = document.createElement("span");
+  currentPageSpan.appendChild(
+    document.createTextNode(`${currentPage}/${lastPage}`)
+  );
+  paginationDiv.appendChild(currentPageSpan);
+
+  const nextBtn = document.createElement("button");
+  nextBtn.appendChild(document.createTextNode("Next"));
+  if (isNextPage) {
+    nextBtn.className = "btn btn-sm";
+  } else {
+    nextBtn.className = "btn btn-sm disabled";
+  }
+  nextBtn.addEventListener("click", () => getExpenses(nextPage));
+  paginationDiv.appendChild(nextBtn);
+};
+
+const getExpenses = async (page) => {
   expenseList.replaceChildren();
   premiumFeatures();
   // const token = localStorage.getItem("token");
+  console.log(page);
   try {
-    const res = await axios.get(baseUrl, {
+    const res = await axios.get(`${baseUrl}/${page}`, {
       headers: { Authentication: token },
     });
-    const expenses = res.data;
+    const {
+      expenses,
+      currentPage,
+      isNextPage,
+      isPreviousPage,
+      previousPage,
+      nextPage,
+      lastPage,
+    } = res.data;
     if (expenses.length === 0) {
       expenseList.parentElement.innerHTML += `<p style='text-align: center'>No expenses found! Add expenses above.</p>`;
     } else {
       expenses.forEach((exp) => {
         displayExpenses(exp);
+      });
+      showPagination({
+        currentPage,
+        isNextPage,
+        isPreviousPage,
+        previousPage,
+        nextPage,
+        lastPage,
       });
     }
   } catch (err) {
@@ -223,7 +274,9 @@ const getExpenses = async () => {
   }
 };
 
-document.addEventListener("DOMContentLoaded", getExpenses);
+document.addEventListener("DOMContentLoaded", () => {
+  getExpenses(1);
+});
 
 const submitHandler = async (e) => {
   e.preventDefault();
@@ -239,29 +292,14 @@ const submitHandler = async (e) => {
   };
   console.log(expList);
   // localStorage.setItem(desc.value, JSON.stringify(expList));
-  let editId = document.querySelector(".submit-btn").id;
-  if (editId !== "") {
-    try {
-      const res = await axios.post(
-        `${baseUrl}/edit-expense/${editId}`,
-        expList,
-        { headers: { Authentication: token } }
-      );
-      getExpenses();
-      document.querySelector(".submit-btn").id = "";
-    } catch (err) {
-      console.log(err);
-    }
-  } else {
-    try {
-      const exp = await axios.post(`${baseUrl}/add-expense`, expList, {
-        headers: { Authentication: token },
-      });
-      displayExpenses(exp.data);
-      messageHandler("Expense Added Successfully", "success");
-    } catch (err) {
-      messageHandler(err, "error");
-    }
+  try {
+    const exp = await axios.post(`${baseUrl}/add-expense`, expList, {
+      headers: { Authentication: token },
+    });
+    displayExpenses(exp.data);
+    messageHandler("Expense Added Successfully", "success");
+  } catch (err) {
+    messageHandler(err, "error");
   }
 
   desc.value = "";
@@ -282,18 +320,6 @@ const deleteHandler = async (e) => {
   } catch (err) {
     messageHandler(err, "error");
   }
-};
-
-const editHandler = (e) => {
-  const li = e.target.parentElement;
-  const desc = li.querySelector(".span-desc").textContent;
-  const amount = li.querySelector(".span-amount").textContent;
-  const category = li.querySelector(".span-category").textContent;
-  document.querySelector(".submit-btn").id = li.id;
-
-  document.getElementById("desc").value = desc;
-  document.getElementById("expense").value = amount;
-  document.getElementById("category").value = category;
 };
 
 const downloadManager = async (e) => {
@@ -329,6 +355,7 @@ const displayFiles = (file) => {
   tr.innerHTML += `<td>${date}</td>
                     <td><a href=${file.fileUrl}>${file.fileUrl}</a></td>`;
   fileDownloadBody.appendChild(tr);
+  window.location.href = "#fileDownloads";
 };
 
 downloadBtn.addEventListener("click", downloadManager);
