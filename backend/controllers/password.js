@@ -1,5 +1,5 @@
 const SibApiV3Sdk = require("sib-api-v3-sdk");
-require("dotenv").config();
+// require("dotenv").config();
 const { v4: uuidv4 } = require("uuid");
 const ForgotPasswordRequests = require("../models/forgotPasswordRequests");
 const User = require("../models/user");

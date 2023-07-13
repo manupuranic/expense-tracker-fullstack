@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const sequelize = require("../utils/database");
 
 const generateWebToken = (id, isPremium) => {
-  return jwt.sign({ userId: id, isPremium: isPremium }, "secretKey");
+  return jwt.sign({ userId: id, isPremium: isPremium }, process.env.JWT_SECRET);
 };
 
 exports.postSignUpUser = async (req, res, next) => {

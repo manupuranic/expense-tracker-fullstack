@@ -11,8 +11,8 @@ const generateWebToken = (id, isPremium) => {
 exports.purchasePremium = async (req, res, next) => {
   try {
     var rzp = new Razorpay({
-      key_id: process.env.KEY_ID,
-      key_secret: process.env.KEY_SECRET,
+      key_id: process.env.RAZORPAY_KEY_ID,
+      key_secret: process.env.RAZORPAY_KEY_SECRET,
     });
     const amount = 2500;
 

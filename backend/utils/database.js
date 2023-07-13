@@ -1,8 +1,13 @@
 const Sequelize = require("sequelize");
 
-const sequelize = new Sequelize("expense-fullstack", "root", "root2000", {
-  host: "localhost",
-  dialect: "mysql",
-});
+const sequelize = new Sequelize(
+  process.env.DB_SCHEMA,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  {
+    host: process.env.DB_HOST,
+    dialect: process.env.DB_DIALECT,
+  }
+);
 
 module.exports = sequelize;

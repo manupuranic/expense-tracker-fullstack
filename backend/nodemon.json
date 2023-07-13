@@ -1,0 +1,16 @@
+{
+  "env": {
+    "RAZORPAY_KEY_ID": "rzp_test_cpzxN1rwK7mEIy",
+    "RAZORPAY_KEY_SECRET": "1iY56NglIoyneMe7wdfykRJw",
+    "JWT_SECRET": "secretKey",
+    "DB_SCHEMA": "expense-fullstack",
+    "DB_USER": "root",
+    "DB_PASSWORD": "root2000",
+    "DB_HOST": "localhost",
+    "DB_DIALECT": "mysql",
+    "SENDINBLUE_API_KEY": "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",
+    "AWS_KEY": "AKIAYCVQDXQTEHNCQNF6",
+    "AWS_SECRET": "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",
+    "AWS_BUCKET_NAME": "expense-tracker-node"
+  }
+}

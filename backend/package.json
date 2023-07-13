@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "start:dev": "NODE_ENV=production RAZORPAY_KEY_ID=rzp_test_cpzxN1rwK7mEIy RAZORPAY_KEY_SECRET=1iY56NglIoyneMe7wdfykRJw JWT_SECRET=secretKey DB_SCHEMA=expense-fullstack DB_USER=root DB_PASSWORD=root2000 DB_HOST=localhost DB_DIALECT=mysql SENDINBLUE_API_KEY=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 AWS_KEY=AKIAYCVQDXQTEHNCQNF6 AWS_SECRET=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 AWS_BUCKET_NAME=expense-tracker-node node app.js",
     "start": "nodemon app.js"
   },
   "author": "Manu",
@@ -16,7 +17,9 @@
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "helmet": "^7.0.0",
     "jsonwebtoken": "^9.0.1",
+    "morgan": "^1.10.0",
     "mysql2": "^3.5.0",
     "razorpay": "^2.9.0",
     "sequelize": "^6.32.1",
